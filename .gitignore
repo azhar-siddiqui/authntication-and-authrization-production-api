@@ -1,0 +1,48 @@
+# ────────────────────────────────────────────────
+# Node.js / JavaScript / TypeScript
+# ────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log          # ← pnpm specific
+.pnpm-store/             # if you ever use store outside .pnpm
+*.tsbuildinfo
+dist/
+build/
+coverage/
+.next/
+out/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE / editor
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# OS junk
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.bak
+*.tmp
+
+# Testing artifacts
+playwright-report/
+test-results/
+
+# Optional: lockfile — usually commit it, but some teams ignore
+# package-lock.json     # ← npm
+# yarn.lock             # ← yarn
+# pnpm-lock.yaml        # ← pnpm — almost always commit this!
