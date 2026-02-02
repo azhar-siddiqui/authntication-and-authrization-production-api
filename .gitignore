@@ -46,3 +46,4 @@ test-results/
 # package-lock.json     # ← npm
 # yarn.lock             # ← yarn
 # pnpm-lock.yaml        # ← pnpm — almost always commit this!
+/src/generated/prisma
