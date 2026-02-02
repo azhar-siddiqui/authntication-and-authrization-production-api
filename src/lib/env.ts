@@ -4,6 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     APP_ENV: z.string().min(1),
+    PORT: z.coerce.number().default(8080),
     KEY_ADMIN_NAME: z.string().min(1),
     KEY_ADMIN_EMAIL: z.string().min(1),
     KEY_ADMIN_PASSWORD: z.string().min(1),
