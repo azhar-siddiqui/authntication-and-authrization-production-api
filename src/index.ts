@@ -1,5 +1,7 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
+import cors from "cors";
 import express from "express";
+import helmet from "helmet";
 import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
@@ -14,6 +16,8 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
 
 export const openApiDocument = generateOpenApiDocument(appRouter, {
   title: "My API todos Documentation",
@@ -33,10 +37,6 @@ fs.writeFile(
     }
   },
 );
-
-app.get("/", (req, res) => {
-  res.json({ message: "Hello, World!" });
-});
 
 app.get("/openapi.json", (req, res) => {
   res.json(openApiDocument);
@@ -59,5 +59,5 @@ app.use(
 );
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is up running on http://localhost:${PORT}`);
 });

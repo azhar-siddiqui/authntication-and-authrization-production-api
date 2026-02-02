@@ -5,7 +5,15 @@ import type { Context } from "../context.js";
  * Initialization of tRPC backend
  * Should be done only once per backend!
  */
-const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
+const t = initTRPC
+  .context<Context>()
+  .meta<OpenApiMeta>()
+  .create({
+    errorFormatter: ({ error }) => ({
+      message: error.message,
+      code: error.code,
+    }),
+  });
 /**
  * Export reusable router and procedure helpers
  * that can be used throughout the router
