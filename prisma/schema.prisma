@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  KEY_ADMIN
+  ADMIN
+  USER
+  DOCTOR
+  PATIENT
+}
+
+enum Designation {
+  Mr
+  Mrs
+  Miss
+  Baby
+  Other
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum Age {
+  Year
+  Month
+  Days
+}
+
+model KeyAdmin {
+  id       String @id @default(uuid())
+  name     String @db.VarChar(100) // limit name length
+  email    String @unique @db.VarChar(150)
+  password String @db.VarChar(255) // hashed passwords can be long
+  role     Role   @default(KEY_ADMIN)
+
+  admins Admin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([role]) // Only one key admin
+  @@map("key_admins")
+}
+
+model Admin {
+  id               String    @id @default(uuid())
+  labName          String    @db.VarChar(120)
+  ownerName        String    @db.VarChar(120)
+  email            String    @unique @db.VarChar(150)
+  password         String    @db.VarChar(255)
+  contactNumber    String    @db.VarChar(20) // phone max 20 chars
+  previousSoftware String?   @db.VarChar(200)
+  role             Role      @default(ADMIN)
+  isActive         Boolean   @default(false)
+  isVerified       Boolean   @default(false)
+  isTrialUsed      Boolean   @default(false)
+  isBlock          Boolean   @default(false)
+  keyAdminId       String?
+  keyAdmin         KeyAdmin? @relation(fields: [keyAdminId], references: [id])
+
+  users    User[]
+  doctors  Doctor[]
+  patients Patient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model User {
+  id            String @id @default(uuid())
+  name          String @db.VarChar(100)
+  username      String @unique @db.VarChar(50)
+  contactNumber String @db.VarChar(20)
+  password      String @db.VarChar(255)
+  role          Role   @default(USER)
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  patients Patient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Doctor {
+  id             String  @id @default(uuid())
+  name           String  @db.VarChar(100)
+  email          String? @unique @db.VarChar(150)
+  contactNumber  String? @db.VarChar(20)
+  specialization String? @db.VarChar(250)
+  role           Role    @default(DOCTOR)
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("doctors")
+}
+
+model Patient {
+  id            String @id @default(uuid())
+  name          String @db.VarChar(100)
+  contactNumber String @db.VarChar(20)
+  age           Int?
+  role          Role   @default(PATIENT)
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("patients")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  userId    String
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  ip        String?  @db.VarChar(100)
+  userAgent String?  @db.VarChar(500)
+
+  @@map("refresh_tokens")
+}
